@@ -1,0 +1,21 @@
+name: Package size limit
+on:
+  pull_request:
+    branches: [master, next, next-major, beta, alpha, '[0-9]+.x']
+jobs:
+  size:
+    name: Package size limit
+    runs-on: ubuntu-latest
+    env:
+      CI_JOB_NUMBER: 1
+    steps:
+      - name: Checkout
+        uses: actions/checkout@v3
+      - name: Setup Node
+        uses: actions/setup-node@v3
+        with:
+          node-version-file: ".nvmrc"
+      - name: Size limit
+        uses: andresz1/size-limit-action@v1
+        with:
+          github_token: ${{ secrets.GITHUB_TOKEN }}

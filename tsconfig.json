@@ -1,0 +1,51 @@
+{
+  "compilerOptions": {
+    "target": "ESNext",
+    "useDefineForClassFields": true,
+    "module": "ESNext",
+    "lib": ["ESNext", "DOM"],
+    "moduleResolution": "Node",
+    "strict": true,
+    "resolveJsonModule": true,
+    "isolatedModules": true,
+    "esModuleInterop": true,
+    "noEmit": true,
+    "noUnusedLocals": true,
+    "noUnusedParameters": true,
+    "noImplicitReturns": true,
+    "skipLibCheck": true
+  },
+  "typedocOptions": {
+    "entryPoints": [
+      "src/index.ts",
+      "src/api/cart.ts",
+      "src/api/customers.ts",
+      "src/api/orders.ts",
+      "src/api/places.ts",
+      "src/api/resource.ts",
+      "src/api/template.ts",
+      "src/helpers/item.ts",
+      "src/helpers/location.ts",
+      "src/helpers/datetime.ts",
+      "src/helpers/money.ts",
+      "src/types/looseobject.ts",
+      "src/types/api/cart/index.ts",
+      "src/types/api/customers/index.ts",
+      "src/types/api/orders/index.ts",
+      "src/types/api/places/index.ts",
+      "src/types/api/resource/index.ts",
+      "src/types/api/template/index.ts",
+      "src/types/helpers/item/index.ts",
+      "src/types/helpers/location/index.ts",
+      "src/types/helpers/datetime/index.ts",
+      "src/types/helpers/money/index.ts"
+    ],
+    "intentionallyNotExported": [
+      "BuyersServiceClient"
+    ],
+    "out": "typedocs",
+    "excludeExternals": true,
+    "sort": "source-order"
+  },
+  "include": ["src", "test"]
+}

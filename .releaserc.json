@@ -1,0 +1,31 @@
+{
+  "preset": "conventionalcommits",
+  "npmPublish": false,
+  "tarballDir": "npm-tarball",
+  "assets": "npm-tarball/*.tgz",
+  "branches": ["+([0-9])?(.{+([0-9]),x}).x", "master", "next", "next-major", {"name": "beta", "prerelease": true}, {"name": "alpha", "prerelease": true}],
+  "plugins": [
+    "@semantic-release/commit-analyzer",
+    "@semantic-release/release-notes-generator",
+    ["@semantic-release/npm", {
+      "npmPublish": false,
+      "tarballDir": "lib"
+    }],
+    ["@semantic-release/github", {
+      "assets": [
+        {
+          "label": "Site Theme SDK ESM",
+          "path": "lib/index.js"
+        },
+        {
+          "label": "Site Theme SDK UMD",
+          "path": "lib/index.umd.cjs"
+        },
+        {
+          "label": "Site Theme SDK Tarball",
+          "path": "lib/*.tgz"
+        }
+      ]
+    }]
+  ]
+}
