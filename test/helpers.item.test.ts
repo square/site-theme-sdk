@@ -420,7 +420,9 @@ function createModifierSelection({
 	excludeText = false,
 	choiceSelectionsCount = 2,
 	textSelectionCount = 2,
-	invalidChoice = false
+	invalidChoice = false,
+	useChoiceSelectionObject = false,
+	useMultipleChoiceSelectionQuantity = false,
 }: {
     excludeGiftWrap?: boolean;
     excludeChoice?: boolean;
@@ -429,13 +431,17 @@ function createModifierSelection({
     choiceSelectionsCount?: number;
     textSelectionCount?: number;
     invalidChoice?: boolean;
+	useChoiceSelectionObject?: boolean;
+	useMultipleChoiceSelectionQuantity?: boolean;
 }) {
 	const selectedModifiers: AddItemModifier[] = [];
 	if (!excludeGiftWrap) {
 		selectedModifiers.push({
 			id: 'modifierListGiftWrapId',
 			type: ModifierType.GIFT_WRAP,
-			choiceSelections: [
+			choiceSelections: useChoiceSelectionObject ? [
+				{ id: 'modifierGiftWrapId1', quantity: 1 }
+			] : [
 				'modifierGiftWrapId1'
 			]
 		});
@@ -444,7 +450,10 @@ function createModifierSelection({
 		const choiceModifier = {
 			id: 'modifierListChoiceId',
 			type: ModifierType.CHOICE,
-			choiceSelections: [
+			choiceSelections: useChoiceSelectionObject ? [
+				invalidChoice ? { id: 'invalidChoiceId1', quantity: 1 } : { id: 'modifierChoiceId1', quantity: useMultipleChoiceSelectionQuantity ? 2 : 1 },
+				{ id: 'modifierChoiceId2', quantity: 1 },
+			]: [
 				invalidChoice ? 'invalidChoiceId1' : 'modifierChoiceId1',
 				'modifierChoiceId2',
 			]
@@ -454,7 +463,8 @@ function createModifierSelection({
 		} else if (choiceSelectionsCount === 0) {
 			choiceModifier.choiceSelections = [];
 		} else if (choiceSelectionsCount === 3) {
-			choiceModifier.choiceSelections.push('modifierChoiceId3');
+			// eslint-disable-next-line @typescript-eslint/no-unsafe-member-access, @typescript-eslint/no-unsafe-call, @typescript-eslint/no-explicit-any
+			(<any>choiceModifier.choiceSelections).push(useChoiceSelectionObject ? { id: 'modifierChoiceId3', quantity: 1 } : 'modifierChoiceId3');
 		}
 		selectedModifiers.push(choiceModifier);
 	}
@@ -772,11 +782,34 @@ describe('Modifier list valid', () => {
 		expect(result4).toStrictEqual(true);
 	});
 
+	it('should return valid for all with valid modifiers selections using ChoiceSelection', () => {
+		const modifierSelections = createModifierSelection({useChoiceSelectionObject: true});
+
+		const result = sdk.helpers.item.isModifierListForSelectedModifiersValid(defaultItem.modifier_lists![0], modifierSelections);
+		expect(result).toStrictEqual(true);
+		const result2 = sdk.helpers.item.isModifierListForSelectedModifiersValid(defaultItem.modifier_lists![1], modifierSelections);
+		expect(result2).toStrictEqual(true);
+		const result3 = sdk.helpers.item.isModifierListForSelectedModifiersValid(defaultItem.modifier_lists![2], modifierSelections);
+		expect(result3).toStrictEqual(true);
+		const result4 = sdk.helpers.item.isModifierListForSelectedModifiersValid(defaultItem.modifier_lists![3], modifierSelections);
+		expect(result4).toStrictEqual(true);
+	});
+
 	it('should return false for invalid choice modifier selections', () => {
 		const modifierSelections = createModifierSelection({ invalidChoice: true });
 		const result = sdk.helpers.item.isModifierListForSelectedModifiersValid(defaultItem.modifier_lists![1], modifierSelections);
 		expect(result).toStrictEqual(false);
 		const modifierSelections2 = createModifierSelection({ choiceSelectionsCount: 1 });
+		const zeroChoiceModifiersItem = createTestItem({ zeroChoiceModifiers: true });
+		const result2 = sdk.helpers.item.isModifierListForSelectedModifiersValid(zeroChoiceModifiersItem.modifier_lists![1], modifierSelections2);
+		expect(result2).toStrictEqual(false);
+	});
+
+	it('should return false for invalid choice modifier selections using ChoiceSelection', () => {
+		const modifierSelections = createModifierSelection({ invalidChoice: true, useChoiceSelectionObject: true });
+		const result = sdk.helpers.item.isModifierListForSelectedModifiersValid(defaultItem.modifier_lists![1], modifierSelections);
+		expect(result).toStrictEqual(false);
+		const modifierSelections2 = createModifierSelection({ choiceSelectionsCount: 1, useChoiceSelectionObject: true });
 		const zeroChoiceModifiersItem = createTestItem({ zeroChoiceModifiers: true });
 		const result2 = sdk.helpers.item.isModifierListForSelectedModifiersValid(zeroChoiceModifiersItem.modifier_lists![1], modifierSelections2);
 		expect(result2).toStrictEqual(false);
@@ -788,6 +821,16 @@ describe('Modifier list valid', () => {
 		const result = sdk.helpers.item.isModifierListForSelectedModifiersValid(soldOutChoiceModifiersItem.modifier_lists![1], modifierSelections);
 		expect(result).toStrictEqual(true);
 		const modifierSelections2 = createModifierSelection({});
+		const result2 = sdk.helpers.item.isModifierListForSelectedModifiersValid(soldOutChoiceModifiersItem.modifier_lists![1], modifierSelections2);
+		expect(result2).toStrictEqual(false);
+	});
+
+	it('should return false for sold out choice modifier selections using ChoiceSelection', () => {
+		const soldOutChoiceModifiersItem = createTestItem({ soldOutChoiceModifier: true});
+		const modifierSelections = createModifierSelection({ choiceSelectionsCount: 1, useChoiceSelectionObject: true });
+		const result = sdk.helpers.item.isModifierListForSelectedModifiersValid(soldOutChoiceModifiersItem.modifier_lists![1], modifierSelections);
+		expect(result).toStrictEqual(true);
+		const modifierSelections2 = createModifierSelection({ useChoiceSelectionObject: true });
 		const result2 = sdk.helpers.item.isModifierListForSelectedModifiersValid(soldOutChoiceModifiersItem.modifier_lists![1], modifierSelections2);
 		expect(result2).toStrictEqual(false);
 	});
@@ -1406,6 +1449,25 @@ describe('Validate item', () => {
 			]);
 		}
 	});
+
+	it('should throw invalid or missing modifiers using ChoiceSelection', () => {
+		const singleVariationItem = createTestItem({ variationType: 'single' });
+		const invalidChoiceModifiers = createModifierSelection({ choiceSelectionsCount: 3, useChoiceSelectionObject: true });
+		const validateItemFn = () => sdk.helpers.item.validateItem({ item: singleVariationItem, selectedModifiers: invalidChoiceModifiers });
+		expect(validateItemFn).toThrowError();
+		try {
+			validateItemFn();
+		} catch (ex) {
+			expect((<ValidateItemError>ex).itemOptionIds).toBeUndefined();
+			expect((<ValidateItemError>ex).flatVariationSelectionMissing).toBeUndefined();
+			expect((<ValidateItemError>ex).variationId).toBeUndefined();
+			expect((<ValidateItemError>ex).modifierListIds).toStrictEqual([singleVariationItem.modifier_lists![1].id]);
+		}
+		const singleVariationItem2 = createTestItem({ variationType: 'single', choiceModifierMin: 1, choiceModifierMax: 1 });
+		const missingChoiceModifiers = createModifierSelection({ choiceSelectionsCount: 0, useChoiceSelectionObject: true });
+		const validateItemFn2 = () => sdk.helpers.item.validateItem({ item: singleVariationItem2, selectedModifiers: missingChoiceModifiers });
+		expect(validateItemFn2).toThrowError();
+	});
 });
 
 describe('Get item price', () => {
@@ -1466,6 +1528,27 @@ describe('Get item price', () => {
 		const modifierSelections = createModifierSelection({});
 		const modifierCost = singleVariationItem.modifier_lists![0].modifiers![0].price_money.amount
 			+ singleVariationItem.modifier_lists![1].modifiers![0].price_money.amount
+			+ singleVariationItem.modifier_lists![1].modifiers![1].price_money.amount;
+		const result = sdk.helpers.item.getItemPrice({ item: singleVariationItem, selectedModifiers: modifierSelections });
+		expect(result).toStrictEqual({
+			regular: {
+				amount: singleVariationItem.variations[0].price.regular.amount + modifierCost,
+				formatted: '',
+				currency: singleVariationItem.variations[0].price.regular.currency
+			},
+			sale: {
+				amount: singleVariationItem.variations[0].price.sale.amount + modifierCost,
+				formatted: '',
+				currency: singleVariationItem.variations[0].price.sale.currency
+			}
+		});
+	});
+
+	it('should return price on modifiers using ChoiceSelection', () => {
+		const singleVariationItem = createTestItem({ variationType: 'single' });
+		const modifierSelections = createModifierSelection({ useChoiceSelectionObject: true, useMultipleChoiceSelectionQuantity: true });
+		const modifierCost = singleVariationItem.modifier_lists![0].modifiers![0].price_money.amount
+			+ (singleVariationItem.modifier_lists![1].modifiers![0].price_money.amount * 2)
 			+ singleVariationItem.modifier_lists![1].modifiers![1].price_money.amount;
 		const result = sdk.helpers.item.getItemPrice({ item: singleVariationItem, selectedModifiers: modifierSelections });
 		expect(result).toStrictEqual({
