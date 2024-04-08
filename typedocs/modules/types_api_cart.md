@@ -12,6 +12,7 @@
 - [ChoiceModifier](../interfaces/types_api_cart.ChoiceModifier.md)
 - [TextModifier](../interfaces/types_api_cart.TextModifier.md)
 - [GiftWrapModifier](../interfaces/types_api_cart.GiftWrapModifier.md)
+- [ChoiceSelection](../interfaces/types_api_cart.ChoiceSelection.md)
 - [GiftMessageModifier](../interfaces/types_api_cart.GiftMessageModifier.md)
 - [AddLineItem](../interfaces/types_api_cart.AddLineItem.md)
 - [BuyNowSubscriptionLineItem](../interfaces/types_api_cart.BuyNowSubscriptionLineItem.md)
@@ -34,6 +35,7 @@
 - [ScheduleTypeEnum](types_api_cart.md#scheduletypeenum)
 - [ModifierTypeEnum](types_api_cart.md#modifiertypeenum)
 - [CurrencyTypeEnum](types_api_cart.md#currencytypeenum)
+- [Choice](types_api_cart.md#choice)
 - [AddItemModifier](types_api_cart.md#additemmodifier)
 - [BuyNowSubscriptionItemModifier](types_api_cart.md#buynowsubscriptionitemmodifier)
 
@@ -67,6 +69,12 @@ ___
 ### CurrencyTypeEnum
 
 Ƭ **CurrencyTypeEnum**: typeof [`CurrencyType`](types_api_cart.md#currencytype)[keyof typeof [`CurrencyType`](types_api_cart.md#currencytype)]
+
+___
+
+### Choice
+
+Ƭ **Choice**: `string` \| [`ChoiceSelection`](../interfaces/types_api_cart.ChoiceSelection.md)
 
 ___
 

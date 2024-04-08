@@ -92,7 +92,7 @@ export interface ChoiceModifier extends BaseModifier {
 	/** The modifier type. */
 	type: 'CHOICE';
 	/** Choice selections for modifier. */
-	choiceSelections: string[];
+	choiceSelections: Choice[];
 }
 
 export interface TextModifier extends BaseModifier {
@@ -106,7 +106,14 @@ export interface GiftWrapModifier extends BaseModifier {
 	/** The modifier type. */
 	type: 'GIFT_WRAP';
 	/** Choice selections for modifier. */
-	choiceSelections: string[];
+	choiceSelections: Choice[];
+}
+
+export type Choice = string | ChoiceSelection;
+
+export interface ChoiceSelection {
+	id: string;
+	quantity: number;
 }
 
 export interface GiftMessageModifier extends BaseModifier {

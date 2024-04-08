@@ -174,8 +174,18 @@ export class Item {
 		let selectedValueCount = (<TextModifier>selectedModifier)?.textEntry?.length || 0;
 		if ((<ChoiceModifier>selectedModifier)?.choiceSelections?.length) {
 			// Invalid or sold out choices
-			const invalidChoice = (<ChoiceModifier>selectedModifier).choiceSelections.find(s => !modifierList.modifiers?.find(m => m.id === s));
-			const soldOutChoice = (<ChoiceModifier>selectedModifier).choiceSelections.find(s => modifierList.modifiers?.find(m => m.id === s)?.sold_out);
+			const invalidChoice = (<ChoiceModifier>selectedModifier).choiceSelections.find(s => !modifierList.modifiers?.find(m => {
+				if (typeof s === 'object') {
+					return m.id === s.id;
+				}
+				return m.id === s;
+			}));
+			const soldOutChoice = (<ChoiceModifier>selectedModifier).choiceSelections.find(s => modifierList.modifiers?.find(m => {
+				if (typeof s === 'object') {
+					return m.id === s.id;
+				}
+				return m.id === s;
+			})?.sold_out);
 			if (invalidChoice || soldOutChoice) {
 				return false;
 			}
@@ -322,9 +332,18 @@ export class Item {
 					const matchingModifierList = item.modifier_lists?.find(l => l.id === selectedModifier.id);
 					if (matchingModifierList) {
 						matchingModifierList.modifiers?.forEach(m => {
-							if (selectedModifier.choiceSelections.includes(m.id) && m.price_money) {
-								regularPrice += m.price_money.amount;
-								salePrice += m.price_money.amount;
+							let quantity = 1;
+							if (selectedModifier.choiceSelections.find(s => {
+								if (typeof s === 'object') {
+									if (m.id === s.id) {
+										quantity = s.quantity;
+										return true;
+									}
+								}
+								return m.id === s;
+							}) && m.price_money) {
+								regularPrice += m.price_money.amount * quantity;
+								salePrice += m.price_money.amount * quantity;
 							}
 						});
 					}

@@ -42,6 +42,6 @@ ___
 
 ### choiceSelections
 
-• **choiceSelections**: `string`[]
+• **choiceSelections**: [`Choice`](../modules/types_api_cart.md#choice)[]
 
 Choice selections for modifier.
