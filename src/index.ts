@@ -1,7 +1,7 @@
 
 import { Cart } from './api/cart';
 import { Orders } from './api/orders';
-import { Resource } from './api/resource';
+import { Resources } from './api/resources';
 import { Places } from './api/places';
 import { Template } from './api/template';
 import { Location } from './helpers/location';
@@ -22,7 +22,7 @@ class SiteThemeSDK {
 	cart: Cart;
 	orders: Orders;
 	places: Places;
-	resource: Resource;
+	resources: Resources;
 	template: Template;
 	customers: Customers;
 	helpers: {
@@ -50,7 +50,7 @@ class SiteThemeSDK {
 		this.cart = new Cart();
 		this.orders = new Orders(initObj);
 		this.places = new Places(initObj);
-		this.resource = new Resource();
+		this.resources = new Resources();
 		this.template = new Template();
 		this.customers = new Customers(initObj);
 		this.helpers = {

@@ -3,8 +3,8 @@
 import { describe, expect, it, vi, beforeEach } from 'vitest';
 import {
 	ItemResourceInput,
-	ResourceRequest
-} from '../src/types/api/resource';
+	ResourcesRequest
+} from '../src/types/api/resources';
 import { getTestSiteThemeSDK } from './helpers';
 import type LooseObject from '../src/types/looseobject';
 
@@ -12,12 +12,13 @@ const STATUS_TEXT = 'status';
 const CSRF_TOKEN = 'token';
 const CART_TOKEN = 'cart';
 const CURRENT_URL = 'currentUrl';
-const RESOURCE_API_URL = '/s/api/v1/resource';
+const RESOURCES_API_URL = '/s/api/v1/resources';
 
-const okResourceResponse = {
-	data: {}
+const okResourcesResponse = {
+	data: {},
+	errors: []
 };
-const okFetchResponse = createFetchResponse(okResourceResponse, true, 200);
+const okFetchResponse = createFetchResponse(okResourcesResponse, true, 200);
 
 function createFetchResponse(data: LooseObject, ok: boolean, status: number, redirectUrl = ''): Response {
 	return {
@@ -57,9 +58,9 @@ function createHeadersAndMethodForRequest(method: string = 'POST'): LooseObject 
 	};
 }
 
-function createItemResourceRequest(
+function createItemResourcesRequest(
 	{ itemId }: { itemId: string }
-): ResourceRequest {
+): ResourcesRequest {
 	const itemInput: ItemResourceInput = {
 		type: 'item',
 		filters: {
@@ -68,7 +69,7 @@ function createItemResourceRequest(
 		}
 	};
 
-	const request: ResourceRequest = {
+	const request: ResourcesRequest = {
 		'item': itemInput
 	};
 
@@ -107,11 +108,11 @@ beforeEach(() => {
 
 describe('Resources request', () => {
 	it('should make valid fetch', async () => {
-		const request: ResourceRequest = createItemResourceRequest({ itemId: '1' });
-		const result = await sdk.resource.getResource(request);
+		const request: ResourcesRequest = createItemResourcesRequest({ itemId: '1' });
+		const result = await sdk.resources.getResources(request);
 
 		expect(fetch).toHaveBeenCalledWith(
-			`${RESOURCE_API_URL}`,
+			`${RESOURCES_API_URL}`,
 			expect.objectContaining({
 				...createHeadersAndMethodForRequest(),
 				body: JSON.stringify({ input: request })
@@ -120,6 +121,6 @@ describe('Resources request', () => {
 
 		expect(fetch).toHaveBeenCalledOnce();
 
-		expect(result).toStrictEqual(okResourceResponse);
+		expect(result).toStrictEqual(okResourcesResponse);
 	});
 });

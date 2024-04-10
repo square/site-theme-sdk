@@ -1,13 +1,16 @@
 /* eslint-disable @typescript-eslint/no-explicit-any */
 
-/** ResourceRequest can take up to 5 keys (each representing a resource). */
-export interface ResourceRequest {
+/** ResourcesRequest can take up to 5 keys (each representing a resource). */
+export interface ResourcesRequest {
     [key: string]: ResourceInput;
 }
 
 /** `key` is the same key we used in the request object, and the value is the resource being returned. */
-export interface ResourceResponse {
-    [key: string]: any;
+export interface ResourcesResponse {
+    [key: string]: {
+        data?: any;
+        errors: string[];
+    };
 }
 
 /* eslint-disable @typescript-eslint/naming-convention */
