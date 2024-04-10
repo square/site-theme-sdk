@@ -1,20 +1,20 @@
 import {
-	ResourceResponse,
-	ResourceRequest,
+	ResourcesResponse,
+	ResourcesRequest,
 	ResourceInput,
-} from '../types/api/resource';
+} from '../types/api/resources';
 import {
 	buildHeaders
 } from '../helpers/auth';
-import { ResourceMap } from '../types/api/resource/private.types';
+import { ResourceMap } from '../types/api/resources/private.types';
 
-export class Resource {
+export class Resources {
 
 	/**
      * Used to load up to 5 resources.
      *
      * ```ts
-     *  const resourceRequest = {
+     *  const resourcesRequest = {
      *      'categoryListResource': {
      *          type: 'category-list'
      *      },
@@ -42,28 +42,28 @@ export class Resource {
      *      }
      *  };
      *	try {
-     *		const resources = await sdk.resource.getResource(resourceRequest);
+     *		const resources = await sdk.resources.getResources(resourcesRequest);
      *	} catch (error) {
      *		// Handle errors
      *	}
      * ```
      * @throws {@link Error}
      */
-	async getResource(request: ResourceRequest): Promise<ResourceResponse> {
+	async getResources(request: ResourcesRequest): Promise<ResourcesResponse> {
 		const resources: ResourceMap = {};
 		for (const key in request) {
 			const resource: ResourceInput = request[key];
 			resources[key] = resource;
 		}
 
-		const response = await fetch('/s/api/v1/resource', {
+		const response = await fetch('/s/api/v1/resources', {
 			method: 'POST',
 			body: JSON.stringify({
 				input: resources
 			}),
 			headers: buildHeaders()
 		});
-		const resourceResponse = await response.json() as ResourceResponse;
-		return resourceResponse;
+		const resourcesResponse = await response.json() as ResourcesResponse;
+		return resourcesResponse;
 	}
 }

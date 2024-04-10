@@ -16,7 +16,7 @@
 - [cart](index.default.md#cart)
 - [orders](index.default.md#orders)
 - [places](index.default.md#places)
-- [resource](index.default.md#resource)
+- [resources](index.default.md#resources)
 - [template](index.default.md#template)
 - [customers](index.default.md#customers)
 - [helpers](index.default.md#helpers)
@@ -59,9 +59,9 @@ ___
 
 ___
 
-### resource
+### resources
 
-• **resource**: [`Resource`](api_resource.Resource.md)
+• **resources**: [`Resources`](api_resources.Resources.md)
 
 ___
 

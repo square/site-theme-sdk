@@ -1,12 +1,12 @@
-[@square/site-theme-sdk](../GettingStarted.md) / [Modules](../modules.md) / [types/api/resource](../modules/types_api_resource.md) / ItemListResourceInput
+[@square/site-theme-sdk](../GettingStarted.md) / [Modules](../modules.md) / [types/api/resources](../modules/types_api_resources.md) / ItemListResourceInput
 
 # Interface: ItemListResourceInput
 
-[types/api/resource](../modules/types_api_resource.md).ItemListResourceInput
+[types/api/resources](../modules/types_api_resources.md).ItemListResourceInput
 
 ## Hierarchy
 
-- [`BaseListResourceInput`](types_api_resource.BaseListResourceInput.md)
+- [`BaseListResourceInput`](types_api_resources.BaseListResourceInput.md)
 
   ↳ **`ItemListResourceInput`**
 
@@ -14,10 +14,10 @@
 
 ### Properties
 
-- [pagination](types_api_resource.ItemListResourceInput.md#pagination)
-- [sort](types_api_resource.ItemListResourceInput.md#sort)
-- [type](types_api_resource.ItemListResourceInput.md#type)
-- [filters](types_api_resource.ItemListResourceInput.md#filters)
+- [pagination](types_api_resources.ItemListResourceInput.md#pagination)
+- [sort](types_api_resources.ItemListResourceInput.md#sort)
+- [type](types_api_resources.ItemListResourceInput.md#type)
+- [filters](types_api_resources.ItemListResourceInput.md#filters)
 
 ## Properties
 
@@ -34,7 +34,7 @@
 
 #### Inherited from
 
-[BaseListResourceInput](types_api_resource.BaseListResourceInput.md).[pagination](types_api_resource.BaseListResourceInput.md#pagination)
+[BaseListResourceInput](types_api_resources.BaseListResourceInput.md).[pagination](types_api_resources.BaseListResourceInput.md#pagination)
 
 ___
 
@@ -51,7 +51,7 @@ ___
 
 #### Inherited from
 
-[BaseListResourceInput](types_api_resource.BaseListResourceInput.md).[sort](types_api_resource.BaseListResourceInput.md#sort)
+[BaseListResourceInput](types_api_resources.BaseListResourceInput.md).[sort](types_api_resources.BaseListResourceInput.md#sort)
 
 ___
 
