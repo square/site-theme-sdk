@@ -16,6 +16,7 @@
 - [ItemOption](../interfaces/types_helpers_item.ItemOption.md)
 - [Modifier](../interfaces/types_helpers_item.Modifier.md)
 - [ModifierList](../interfaces/types_helpers_item.ModifierList.md)
+- [ItemPrepTime](../interfaces/types_helpers_item.ItemPrepTime.md)
 - [Item](../interfaces/types_helpers_item.Item.md)
 
 ### Type Aliases

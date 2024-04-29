@@ -1,7 +1,7 @@
 import {
 	OptionSelection,
 	Item as ItemResource,
-	ItemOption, 
+	ItemOption,
 	ModifierList,
 	Variation,
 	ValidateItemError,
@@ -10,9 +10,10 @@ import {
 	QuantityErrorTypeEnum,
 	GetItemPriceRequest,
 	ValidateItemRequest,
-	GetInStockVariationsForSelectedOptionsOrVariationRequest
+	GetInStockVariationsForSelectedOptionsOrVariationRequest,
+	ItemPrepTime
 } from '../types/helpers/item';
-import { 
+import {
 	AddLineItem,
 	AddItemModifier,
 	ChoiceModifier,
@@ -37,7 +38,7 @@ const getVariationSelections = (variation: Variation) => {
 };
 
 const getEventEndDate = (item: ItemResource): Date => {
-    
+
 	const endDate = item.item_type_details.end_date;
 	const endTime = item.item_type_details.end_time!;
 
@@ -87,7 +88,7 @@ export class Item {
 	isVariationSoldOut(variation: Variation): boolean {
 		return variation.sold_out || (variation.inventory_tracking_enabled && variation.inventory === 0);
 	}
-    
+
 	/**
      * Returns the QuantityErrorType if there's an item quantity error with the item varation, otherwise null.
      */
@@ -376,7 +377,7 @@ export class Item {
 			}
 			return itemPrice;
 		}
-		
+
 		return null;
 	}
 
@@ -400,5 +401,32 @@ export class Item {
 		}
 		const cutoffTime = item.fulfillment_availability.PICKUP[0].availability_cutoff_at;
 		return new Date(cutoffTime) <= new Date();
+	}
+
+	/**
+	 * Returns the item's prep time duration parsed into value, unit, is_time.
+	 * is_time means prep duration includes a time component (hour/minute/second). It's used to differentiate '4M' between '4 months' and '4 minutes'
+	 * Note that this function relies on the fact that prepTimeDuration currently only supports
+	 * a single time unit! I.e. P2DT6H20M is not currently supported and will not work.
+	 */
+	parsePrepTime(prepTimeDuration: string): ItemPrepTime | null {
+		const parsedPrepTime = /(PT(?<timeValue>\d+)(?<timeUnit>\w))|(P(?<value>\d+)(?<unit>\w))/g.exec(prepTimeDuration)?.groups;
+		if (!(parsedPrepTime?.timeValue && parsedPrepTime?.timeUnit) && !(parsedPrepTime?.value && parsedPrepTime?.unit)) {
+			return null;
+		}
+
+		const isTime = Boolean(parsedPrepTime?.timeValue);
+		const value = isTime
+			? Number(parsedPrepTime?.timeValue)
+			: Number(parsedPrepTime?.value);
+		const unit = isTime
+			? parsedPrepTime?.timeUnit
+			: parsedPrepTime?.unit;
+
+		return {
+			value: value,
+			unit: unit,
+			is_time: isTime,
+		};
 	}
 }

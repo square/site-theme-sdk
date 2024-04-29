@@ -112,6 +112,12 @@ export interface ModifierList {
     type: ModifierTypeEnum;
 }
 
+export interface ItemPrepTime {
+    value: number;
+    unit: string;
+    is_time: boolean;
+}
+
 export interface Item {
     id: string;
     variations: Variation[];

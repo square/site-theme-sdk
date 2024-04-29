@@ -26,6 +26,7 @@
 - [getItemPrice](helpers_item.Item.md#getitemprice)
 - [isEventItemInThePast](helpers_item.Item.md#iseventiteminthepast)
 - [isPreorderItemCutoffInThePast](helpers_item.Item.md#ispreorderitemcutoffinthepast)
+- [parsePrepTime](helpers_item.Item.md#parsepreptime)
 
 ## Constructors
 
@@ -297,3 +298,24 @@ Returns whether an item is a preorder and the cutoff time has passed.
 #### Returns
 
 `boolean`
+
+___
+
+### parsePrepTime
+
+▸ **parsePrepTime**(`prepTimeDuration`): ``null`` \| [`ItemPrepTime`](../interfaces/types_helpers_item.ItemPrepTime.md)
+
+Returns the item's prep time duration parsed into value, unit, is_time.
+is_time means prep duration includes a time component (hour/minute/second). It's used to differentiate '4M' between '4 months' and '4 minutes'
+Note that this function relies on the fact that prepTimeDuration currently only supports
+a single time unit! I.e. P2DT6H20M is not currently supported and will not work.
+
+#### Parameters
+
+| Name | Type |
+| :------ | :------ |
+| `prepTimeDuration` | `string` |
+
+#### Returns
+
+``null`` \| [`ItemPrepTime`](../interfaces/types_helpers_item.ItemPrepTime.md)

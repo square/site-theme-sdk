@@ -1492,7 +1492,7 @@ describe('Get item price', () => {
 			regular: {
 				amount: multipleVariationItem.variations[3].price.regular.amount,
 				formatted: '',
-				currency: multipleVariationItem.variations[3].price.regular.currency	
+				currency: multipleVariationItem.variations[3].price.regular.currency
 			},
 			sale: {
 				amount: multipleVariationItem.variations[3].price.sale.amount,
@@ -1758,7 +1758,7 @@ describe('Is event item in the past', () => {
 	it('should test event in the future for pacific time', () => {
 		const date = '2023-07-18T22:00:00-07:00';
 		vi.setSystemTime(new Date(date));
-        
+
 		const item = createTestItem({
 			squareOnlineType: 'EVENT',
 			itemTypeDetailsEndDate: '2023-07-19',
@@ -1788,7 +1788,7 @@ describe('Is event item in the past', () => {
 	it('should test event in the future for eastern time', () => {
 		const date = '2023-07-18T16:00:00-04:00';
 		vi.setSystemTime(new Date(date));
-        
+
 		const item = createTestItem({
 			squareOnlineType: 'EVENT',
 			itemTypeDetailsEndDate: '2023-07-18',
@@ -1814,11 +1814,11 @@ describe('Is event item in the past', () => {
 		const result3 = sdk.helpers.item.isEventItemInThePast(item3);
 		expect(result3).toStrictEqual(false);
 	});
-    
+
 	it('should test event in the future for eastern time at noon', () => {
 		const date = '2023-07-18T12:00:00-04:00';
 		vi.setSystemTime(new Date(date));
-        
+
 		const item = createTestItem({
 			squareOnlineType: 'EVENT',
 			itemTypeDetailsEndDate: '2023-07-18',
@@ -1892,5 +1892,32 @@ describe('Is preorder item cutoff in the past', () => {
 		});
 		const result3 = sdk.helpers.item.isPreorderItemCutoffInThePast(item3);
 		expect(result3).toStrictEqual(false);
+	});
+});
+
+describe('Is item prep time correctly parsed', () => {
+	it.each([
+		{ value: 'PT20M', expected: { value: 20, unit: 'M', is_time: true } },
+		{ value: 'PT60M', expected: { value: 60, unit: 'M', is_time: true } },
+		{ value: 'PT90M', expected: { value: 90, unit: 'M', is_time: true } },
+		{ value: 'PT120M', expected: { value: 120, unit: 'M', is_time: true } },
+		{ value: 'PT1H', expected: { value: 1, unit: 'H', is_time: true } },
+		{ value: 'PT2H', expected: { value: 2, unit: 'H', is_time: true } },
+		{ value: 'P1D', expected: { value: 1, unit: 'D', is_time: false } },
+		{ value: 'P2D', expected: { value: 2, unit: 'D', is_time: false } },
+		{ value: 'P7D', expected: { value: 7, unit: 'D', is_time: false } },
+		{ value: 'P1W', expected: { value: 1, unit: 'W', is_time: false } },
+		{ value: 'P3W', expected: { value: 3, unit: 'W', is_time: false } },
+		{ value: 'P8W', expected: { value: 8, unit: 'W', is_time: false } },
+		{ value: 'P1M', expected: { value: 1, unit: 'M', is_time: false } },
+		{ value: 'P3M', expected: { value: 3, unit: 'M', is_time: false } },
+		{ value: 'P1Y', expected: { value: 1, unit: 'Y', is_time: false } },
+		{ value: 'P3Y', expected: { value: 3, unit: 'Y', is_time: false } },
+		{ value: 'P3', expected: null },
+		{ value: 'PD', expected: null },
+		{ value: 'PT3', expected: null },
+		{ value: 'PTD', expected: null },
+	])('should return $expected for value $value', ({ value, expected }) => {
+		expect(sdk.helpers.item.parsePrepTime(value)).toStrictEqual(expected);
 	});
 });
